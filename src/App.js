@@ -1,23 +1,27 @@
-import logo from './logo.svg';
 import './App.css';
-
+import { movies } from "./data";
+import { useState } from 'react';
+import MovieList from './Components/MovieList/MovieList';
+import Add from './Components/Add/Add';
+import Filter from './Components/Filter/Filter';
 function App() {
+  const [moviesList, setMoviesList] = useState(movies)
+  const [search, setsearch] = useState("")
+  const getNewMovie = (newM) => {
+    setMoviesList([...moviesList, { ...newM, id: moviesList.length }])
+  }
+  const handleDclick = () => {
+    setMoviesList([])
+  }
+  const deleteMovie = (idDel) => {
+    setMoviesList(moviesList.filter((el) => el.id !== idDel))
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Filter setsearch={setsearch}/>
+      <button onDoubleClick={handleDclick}>Clear all</button>
+      {moviesList.length ? <MovieList movies={moviesList.filter((el)=>el.title.toLocaleLowerCase().includes(search.trim().toLowerCase()))} deleteMovie={deleteMovie} /> : <h1>no movies</h1>}
+      <Add getNewMovie={getNewMovie} />
     </div>
   );
 }
